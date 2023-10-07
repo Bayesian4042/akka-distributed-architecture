@@ -1,7 +1,9 @@
 import actors.BalanceActor;
 import actors.CashActor;
+import akka.actor.Actor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.routing.FromConfig;
 import akka.routing.RoundRobinPool;
 import dao.FakeDB;
 import msg.BalanceRequestMessage;
@@ -20,7 +22,8 @@ public class App {
         FakeDB.balanceSheet.put(9, 900.0);
 
         ActorSystem system = ActorSystem.create("ATM system");
-        ActorRef balanceActor = system.actorOf(BalanceActor.props().withRouter(new RoundRobinPool(3)), "balanceActor");
+//        ActorRef balanceActor = system.actorOf(BalanceActor.props().withRouter(new RoundRobinPool(3)), "balanceActor");
+        ActorRef balanceActor = system.actorOf(BalanceActor.props().withRouter(FromConfig.getInstance()), "balanceActor");
         ActorRef cashActor = system.actorOf(CashActor.props(), "cashActor");
 
         BalanceRequestMessage bMsg = new BalanceRequestMessage(1, "Bora");
